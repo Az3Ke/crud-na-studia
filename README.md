@@ -1,3 +1,9 @@
+#mySql 
+##npm start 
+at ##/sql to Open [http://localhost:8086](http://localhost:8086) to view it in your browser.
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
