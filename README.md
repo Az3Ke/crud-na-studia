@@ -1,6 +1,6 @@
-#mySql 
-##npm start 
-at ##/sql to Open [http://localhost:8086](http://localhost:8086) to view it in your browser.
+# `mySql` 
+### `npm start` 
+at ###`/sql` to Open [http://localhost:8086](http://localhost:8086) to view it in your browser.
 
 
 
