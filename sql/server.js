@@ -51,6 +51,24 @@ app.post('/add', (req, res) => {
   });
 });
 
+app.put('/Edit/:id', (req, res) => {
+  const id = req.params.id;
+  const { Imię, Nazwisko, Adres, Kodpocztowy, Miasto, Numertelefonu, 'Adrese-mail': Adresemail } = req.body;
+  connection.query(
+    'UPDATE klienci SET Imię = ?, Nazwisko = ?, Adres = ?, Kodpocztowy = ?, Miasto = ?, Numertelefonu = ?, `Adrese-mail` = ? WHERE ID = ?',
+    [Imię, Nazwisko, Adres, Kodpocztowy, Miasto, Numertelefonu, Adresemail, id],
+    (err, results) => {
+      if (err) {
+        console.error('Error executing MySQL query: ' + err.stack);
+        res.sendStatus(500);
+        return;
+      }
+      res.sendStatus(200);
+    }
+  );
+});
+
+
 const port = 8086; //ustawienie portu
 app.listen(port, () => {
   console.log(`Server started on port ${port}`); 
