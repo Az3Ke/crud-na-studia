@@ -177,7 +177,35 @@ app.post("/search", (req, res) => {
     }
   });
 });
+app.post("/search/", (req, res) => {
+  const searchTerm = req.body.searchTerm;
 
+  const query = `SELECT * FROM klienci WHERE Nazwisko LIKE '%${searchTerm}%'`;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+      res.json(results);
+    }
+  });
+});
+app.post("/search/dostawcy", (req, res) => {
+  const searchTerm = req.body.searchTerm;
+
+  const query = `SELECT * FROM dostawcy WHERE Nazwafirmy LIKE ?`;
+  const searchValue = `%${searchTerm}%`;
+
+  db.query(query, [searchValue], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+      res.json(results);
+    }
+  });
+});
 
 
 const port = 8086; //ustawienie portu
