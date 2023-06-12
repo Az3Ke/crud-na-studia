@@ -92,8 +92,17 @@ app.post('/add', (req, res) => {
 });
 
 app.post('/adddostawca', (req, res) => {
-  const sql = "INSERT INTO dostawcy (Nazwafirmy, Adres, Kodpocztowy, Miasto, Numertelefonu, Adresemail) VALUES (?,?,?,?,?,?)"; //dodawanie danych do bazy danych
-  const values = [req.body.Nazwafirmy, req.body.Adres, req.body.Kodpocztowy, req.body.Miasto, req.body.Numertelefonu, req.body.Adresemail]; //pobieranie danych z formularza
+  const sql =
+    "INSERT INTO dostawcy (Nazwafirmy, Adres, Kodpocztowy, Miasto, Numertelefonu, Adresemail) VALUES (?, ?, ?, ?, ?, ?)";
+  const values = [
+    req.body.Nazwafirmy,
+    req.body.Adres,
+    req.body.Kodpocztowy,
+    req.body.Miasto,
+    req.body.Numertelefonu,
+    req.body.Adresemail,
+  ];
+
   db.query(sql, values, (err, data) => {
     if (err) {
       return res.status(500).json({ error: err.message });
@@ -121,10 +130,10 @@ app.put('/Edit/:idklienta', (req, res) => {
 });
 
 app.put('/EditDostawca/:Iddostawcy', (req, res) => {
-  console.log('PUT request received at /Edit/:idklienta');
-  const Iddostawcy = req.params.iddostawcy; //pobieranie id z bazy danych
+  console.log('PUT request received at /Edit/:iddostawcy');
+  const Iddostawcy = req.params.Iddostawcy;
   const { Nazwafirmy, Adres, Kodpocztowy, Miasto, Numertelefonu, Adresemail } = req.body;
-  const sql = 'UPDATE dostawcy SET `Nazwafirmy` = ?, `Adres` = ?, `Kodpocztowy` = ?, `Miasto` = ?, `Numertelefonu` = ?, `Adresemail` = ? WHERE Iddostawcy = ?';
+  const sql = 'UPDATE dostawcy SET Nazwafirmy = ?, Adres = ?, Kodpocztowy = ?, Miasto = ?, Numertelefonu = ?, Adresemail = ? WHERE Iddostawcy = ?';
   const values = [Nazwafirmy, Adres, Kodpocztowy, Miasto, Numertelefonu, Adresemail, Iddostawcy];
   db.query(sql, values, (err, results) => {
     if (err) {

@@ -3,33 +3,37 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 function Klienci() {
-  const [klienci, setKlienci] = useState([]); 
+  const [klienci, setKlienci] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [dostwacy,setDostawcy ] = useState([]); 
-  const [produkty,setProdukty ] = useState([]); 
-  const [zamowienia,setZamowienia ] = useState([]); 
+  const [dostawcy, setDostawcy] = useState([]);
+  const [produkty, setProdukty] = useState([]);
+  const [zamowienia, setZamowienia] = useState([]);
+
   useEffect(() => {
     axios
       .get("http://localhost:8086/") //pobieranie danych z bazy danych
-      .then((res) => setKlienci(res.data)) 
+      .then((res) => setKlienci(res.data))
       .catch((err) => console.log(err));
   }, []);
+
   useEffect(() => {
     axios
       .get("http://localhost:8086/dostawcy") //pobieranie danych z bazy danych
-      .then((res) => setDostawcy(res.data)) 
+      .then((res) => setDostawcy(res.data))
       .catch((err) => console.log(err));
   }, []);
+
   useEffect(() => {
     axios
       .get("http://localhost:8086/produkty") //pobieranie danych z bazy danych
-      .then((res) => setProdukty(res.data)) 
+      .then((res) => setProdukty(res.data))
       .catch((err) => console.log(err));
   }, []);
+
   useEffect(() => {
     axios
       .get("http://localhost:8086/zamowienia") //pobieranie danych z bazy danych
-      .then((res) => setZamowienia(res.data)) 
+      .then((res) => setZamowienia(res.data))
       .catch((err) => console.log(err));
   }, []);
 
@@ -39,18 +43,18 @@ function Klienci() {
       window.location.reload();
     } catch (error) {
       console.error('An error occurred:', error);
-
     }
   };
+
   const DeleteDostawcy = async (id) => {
     try {
       await axios.delete(`http://localhost:8086/delete/dostawcy/${id}`);
       window.location.reload();
     } catch (error) {
       console.error('An error occurred:', error);
-
     }
   };
+
   const handleSearch = async () => {
     try {
       const response = await axios.post("http://localhost:8086/search", {
@@ -62,22 +66,17 @@ function Klienci() {
       console.error(error);
     }
   };
-      
 
-  //zamienić na popupform -- jednak nie
   return (
     <div className="rounded h-70 mx-auto bg-dark rounded  ">
       <h1 className="text-center text-white p-2">Klienci</h1>
-      <nav class="navbar navbar-expand-lg navbar-dark d-flex justify-content-between">
-        
-          <div className="p-2">
-            
-            <Link to="/add" className="btn btn-primary ">
-              Dodaj klienta
-            </Link>
-          </div>
-          
-          <div className="d-flex justify-content-center align-items-center ">
+      <nav className="navbar navbar-expand-lg navbar-dark d-flex justify-content-between">
+        <div className="p-2">
+          <Link to="/add" className="btn btn-primary">
+            Dodaj klienta
+          </Link>
+        </div>
+        <div className="d-flex justify-content-center align-items-center ">
           <input
             type="text"
             name="name"
@@ -86,25 +85,21 @@ function Klienci() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <div className="p-2">
-          <button
-            className="btn btn-success my-2 my-sm-0"
-            type="submit"
-            onClick={handleSearch}
-          >
-            Wyszukaj
-          </button>
+            <button
+              className="btn btn-success my-2 my-sm-0"
+              type="submit"
+              onClick={handleSearch}
+            >
+              Wyszukaj
+            </button>
           </div>
-          </div>
-
-
+        </div>
       </nav>
-      
+
       <div className="d-flex flex-column  m-1">
         <table className="table table-striped table-dark">
           <thead>
-          
             <tr>
-
               <th>Id klienta</th>
               <th>Imię</th>
               <th>Nazwisko</th>
@@ -114,18 +109,12 @@ function Klienci() {
               <th>Numer telefonu</th>
               <th>Adres e-mail</th>
               <th></th>
-              
               <th></th>
-              
             </tr>
           </thead>
           <tbody>
-
-
-      
-          {klienci.map((item) => (
-
-                <tr key={item.idklienta}>
+            {klienci.map((item) => (
+              <tr key={item.idklienta}>
                 <td>{item.idklienta}</td>
                 <td>{item.Imię}</td>
                 <td>{item.Nazwisko}</td>
@@ -133,76 +122,78 @@ function Klienci() {
                 <td>{item.Kodpocztowy}</td>
                 <td>{item.Miasto}</td>
                 <td>{item.Numertelefonu}</td>
-                <td>{item.Adresemail}</td> 
+                <td>{item.Adresemail}</td>
                 <td>
-                 <Link to={`Edit/${item.idklienta}`} type="button" class="btn btn-warning">Edit</Link>
+                  <Link
+                    to={`Edit/${item.idklienta}`}
+                    className="btn btn-warning"
+                  >
+                    Edit
+                  </Link>
                 </td>
                 <td>
-                <button type="button" class="btn btn-danger" onClick={e => Delete(item.idklienta)}>Usuń</button>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => Delete(item.idklienta)}
+                  >
+                    Usuń
+                  </button>
                 </td>
               </tr>
-              
             ))}
           </tbody>
-          
         </table>
         <h1 className="text-center text-white">Dostawcy</h1>
-      <nav class="navbar navbar-expand-lg navbar-dark d-flex justify-content-between">
-        
+        <nav className="navbar navbar-expand-lg navbar-dark d-flex justify-content-between">
           <div className="p-2">
-            
-            <Link to="/Adddostawca" className="btn btn-primary ">
+            <Link to="/Adddostawca" className="btn btn-primary">
               Dodaj Dostawce
             </Link>
           </div>
-          
           <div className="d-flex justify-content-center align-items-center ">
-          <input
-            type="text"
-            name="name"
-            placeholder="Wyszukaj po Nazwie Firmy"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <div className="p-2">
-          <button
-            className="btn btn-success my-2 my-sm-0"
-            type="submit"
-            onClick={handleSearch}
-          >
-            Wyszukaj
-          </button>
+            <input
+              type="text"
+              name="name"
+              placeholder="Wyszukaj po Nazwie Firmy"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div className="p-2">
+              <button
+                className="btn btn-success my-2 my-sm-0"
+                type="submit"
+                onClick={handleSearch}
+              >
+                Wyszukaj
+              </button>
+            </div>
           </div>
-          </div>
+        </nav>
 
-
-      </nav>
-      
         <table className="table table-striped table-dark">
-  <thead>
-              
-              <tr>
-                <th>Id Dostawcy</th>
-                <th>Nazwa Firmy</th>
-                <th>Adres</th>
-                <th>Kod pocztowy</th>
-                <th>Miasto</th>
-                <th>Numer telefonu</th>
-                <th>Adres e-mail</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {dostwacy.map((item) => (
-                <tr key={item.Iddostawcy}>
-                  <td>{item.Iddostawcy}</td>
-                  <td>{item.Nazwafirmy}</td>
-                  <td>{item.Adres}</td>
-                  <td>{item.Kodpocztowy}</td>
-                  <td>{item.Miasto}</td>
-                  <td>{item.Numertelefonu}</td>
-                  <td>{item.Adresemail}</td> 
+          <thead>
+            <tr>
+              <th>Id Dostawcy</th>
+              <th>Nazwa Firmy</th>
+              <th>Adres</th>
+              <th>Kod pocztowy</th>
+              <th>Miasto</th>
+              <th>Numer telefonu</th>
+              <th>Adres e-mail</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {dostawcy.map((item) => (
+              <tr key={item.Iddostawcy}>
+                <td>{item.Iddostawcy}</td>
+                <td>{item.Nazwafirmy}</td>
+                <td>{item.Adres}</td>
+                <td>{item.Kodpocztowy}</td>
+                <td>{item.Miasto}</td>
+                <td>{item.Numertelefonu}</td>
+                <td>{item.Adresemail}</td>
                   <td>
                  <Link to={`EditDostawca/${item.Iddostawcy}`} type="button" class="btn btn-warning">Edit</Link>
                 </td>

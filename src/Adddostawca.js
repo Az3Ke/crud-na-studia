@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function AddDostawca() {
   const [Nazwafirmy, setNazwafirmy] = useState('');
@@ -9,13 +9,13 @@ function AddDostawca() {
   const [Miasto, setMiasto] = useState('');
   const [Numertelefonu, setNumertelefonu] = useState('');
   const [Adresemail, setAdresemail] = useState('');
-  const { ID } = useParams();
+ 
   const navigate = useNavigate();
 
   const submitForm = (event) => {
     event.preventDefault();
     axios
-      .put(`http://localhost:8086/EditDostawca/${ID}`, {
+      .post(`http://localhost:8086/adddostawca`, {
         Nazwafirmy,
         Adres,
         Kodpocztowy,
