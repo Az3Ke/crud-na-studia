@@ -162,6 +162,24 @@ app.delete('/delete/:idklienta', (req, res) => {
   );
 });
 
+app.delete('/delete/dostawcy/:Iddostawcy', (req, res) => {
+  console.log('DELETE request received at /delete/dostawcy/:Iddostawcy');
+  const Iddostawcy = req.params.Iddostawcy; //pobieranie id z bazy danych
+  db.query(
+    'DELETE FROM dostawcy WHERE Iddostawcy = ?',
+    [Iddostawcy],
+    (err, results) => {
+      if (err) {
+        console.error('Error executing MySQL query: ' + err.stack);
+        res.sendStatus(500);
+        return;
+      }
+      res.sendStatus(200);
+    }
+  );
+});
+
+
 //wyszukiwanie po nzawisku
 app.post("/search", (req, res) => {
   const searchTerm = req.body.searchTerm;

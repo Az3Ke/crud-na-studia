@@ -46,7 +46,6 @@ function Klienci() {
       console.error('An error occurred:', error);
     }
   };
-
   const DeleteDostawcy = async (id) => {
     try {
       await axios.delete(`http://localhost:8086/delete/dostawcy/${id}`);
@@ -55,6 +54,7 @@ function Klienci() {
       console.error('An error occurred:', error);
     }
   };
+
 
   const handleSearchKlienci = async () => {
     try {
