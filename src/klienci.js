@@ -9,7 +9,8 @@ function Klienci() {
   const [zamowienia, setZamowienia] = useState([]);
   const [searchTermKlienci, setSearchTermKlienci] = useState('');
   const [searchTermDostawcy, setSearchTermDostawcy] = useState('');
-
+  const [searchTermProdukty, setSearchTermProdukty] = useState('');
+  const [searchTermZamowienia, setSearchTermZamowienia] = useState('');
   useEffect(() => {
     axios
       .get("http://localhost:8086/") //pobieranie danych z bazy danych
@@ -54,8 +55,22 @@ function Klienci() {
       console.error('An error occurred:', error);
     }
   };
-
-
+  const DeleteProdukt = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8086/delete/Produkty/${id}`);
+      window.location.reload();
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
+  const DeleteZam = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8086/delete/Zamowienia/${id}`);
+      window.location.reload();
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
   const handleSearchKlienci = async () => {
     try {
       const response = await axios.post("http://localhost:8086/search", {
@@ -75,6 +90,28 @@ function Klienci() {
       });
 
       setDostawcy(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleSearchProdukty = async () => {
+    try {
+      const response = await axios.post("http://localhost:8086/search/Produkty", {
+        searchTerm: searchTermProdukty,
+      });
+
+      setProdukty(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleSearchZamowienia = async () => {
+    try {
+      const response = await axios.post("http://localhost:8086/search/Zamowienia", {
+        searchTerm: searchTermZamowienia,
+      });
+
+      setZamowienia(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -230,9 +267,40 @@ function Klienci() {
             </tr>
           ))}  </tbody>
           </table>
+
+          <h1 className="text-center text-white">Produkty</h1>
+          <nav className="navbar navbar-expand-lg navbar-dark d-flex justify-content-between">
+            
+        <div className="p-2">
+        
+          <Link to="/Addprodukt" className="btn btn-primary">
+            Dodaj Produkt
+          </Link>
+        </div>
+        <div className="d-flex justify-content-center align-items-center ">
+          <input
+            type="text"
+            name="name"
+            placeholder="Wyszukaj po Nazwie Produktu"
+            value={searchTermProdukty}
+            onChange={(e) => setSearchTermProdukty(e.target.value)}
+          />
+          <div className="p-2">
+            <button
+              className="btn btn-success my-2 my-sm-0"
+              type="submit"
+              onClick={handleSearchProdukty}
+            >
+              Wyszukaj
+            </button>
+          </div>
+        </div>
+      </nav>
+
           <table className="table table-striped table-dark">
+            
             <thead>
-                        <h1 className="text-center">Produkty</h1>
+                        
                         <tr>
                         <th>Id produktu</th>
                           <th>Nazwa Produktu</th>
@@ -260,15 +328,44 @@ function Klienci() {
                            <Link to={`Edit/${item.idklienta}`} type="button" class="btn btn-warning">Edit</Link>
                           </td>
                           <td>
-                          <button type="button" class="btn btn-danger" onClick={e => Delete(item.idklienta)}>Usuń</button>
+                          <button type="button" class="btn btn-danger" onClick={e => DeleteProdukt(item.idproduktu)}>Usuń</button>
                           </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          
+          <h1 className="text-center text-white">Zamówienia</h1>
+          <nav className="navbar navbar-expand-lg navbar-dark d-flex justify-content-between">
+            
+        <div className="p-2">
+        
+          <Link to="/Addprodukt" className="btn btn-primary">
+            Dodaj Zamówienie
+          </Link>
+        </div>
+        <div className="d-flex justify-content-center align-items-center ">
+        <input
+        type="text"
+        name="name"
+        placeholder="Wyszukaj po ID zamówienia"
+        value={searchTermZamowienia}
+        onChange={(e) => setSearchTermZamowienia(e.target.value)}
+      />
+      <div className="p-2">
+        <button
+          className="btn btn-success my-2 my-sm-0"
+          type="submit"
+          onClick={handleSearchZamowienia}
+        >
+          Wyszukaj
+        </button>
+          </div>
+        </div>
+      </nav>
           <table className="table table-striped table-dark">
           <thead>
-                        <h1 className="text-center">Zamówienia</h1>
+                       
                         <tr>
                           <th>Id Zamówienia</th>
                           <th>Id klienta</th>
@@ -283,8 +380,8 @@ function Klienci() {
                       </thead>
                       <tbody>
                         {zamowienia.map((item) => (
-                          <tr key={item.idzamówienia}>
-                            <td>{item.idzamówienia}</td>
+                          <tr key={item.idzamowienia}>
+                            <td>{item.idzamowienia}</td>
                             <td>{item.idklienta}</td>
                             <td>{item.idproduktu}</td>
                             <td>{item.Datazamówienia}</td>
@@ -294,7 +391,7 @@ function Klienci() {
                            <Link to={`Edit/${item.idklienta}`} type="button" class="btn btn-warning">Edit</Link>
                           </td>
                           <td>
-                          <button type="button" class="btn btn-danger" onClick={e => Delete(item.idklienta)}>Usuń</button>
+                          <button type="button" class="btn btn-danger" onClick={e => DeleteZam(item.idzamowienia)}>Usuń</button>
                           </td>
                 </tr>
               ))}

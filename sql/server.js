@@ -9,24 +9,85 @@ app.use(express.urlencoded({ extended: true }));
 
 
 
-const db = mysql.createConnection({     //łączenie z bazą danych
-  host: 'localhost',  
+const db = mysql.createConnection({
+  host: 'localhost',
   user: 'root',
-  password: '',
-  database: 'crud_app'
+  password: ''
 });
-
-
-
-
-
-
 
 db.connect((err) => {
   if (err) throw err;
-  console.log('Connected to MySQL database');  //sprawdzenie czy połączenie z bazą danych działa
-});
+  console.log('Connected to MySQL database');
 
+  db.query('CREATE DATABASE IF NOT EXISTS crud_app', (error) => { //tworzenie bazy danych
+    if (error) throw error;
+    console.log('crud_app database created');
+
+    db.query('USE crud_app', (useError) => { //używanie bazy danych
+      if (useError) throw useError;
+      console.log('Using crud_app database'); 
+
+      const createTables = [ 
+                            `SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO"`,
+                      `CREATE TABLE IF NOT EXISTS dostawcy (
+                        Iddostawcy int(11) NOT NULL PRIMARY KEY,
+                        Nazwafirmy varchar(50) NOT NULL,
+                        Adres varchar(100) NOT NULL,
+                        Kodpocztowy varchar(10) NOT NULL,
+                        Miasto varchar(50) NOT NULL,
+                        Numertelefonu varchar(15) DEFAULT NULL,
+                        Adresemail varchar(50) DEFAULT NULL
+                      )`,
+                      `CREATE TABLE IF NOT EXISTS klienci (
+                        idklienta int(11) NOT NULL,
+                        Imię varchar(50) NOT NULL,
+                        Nazwisko varchar(50) NOT NULL,
+                        Adres varchar(100) NOT NULL,
+                        Kodpocztowy varchar(10) NOT NULL,
+                        Miasto varchar(50) NOT NULL,
+                        Numertelefonu varchar(15) DEFAULT NULL,
+                        Adresemail varchar(50) DEFAULT NULL,
+                        PRIMARY KEY (idklienta),
+                        UNIQUE KEY Adresemail (Adresemail)
+                      )`,
+                      `CREATE TABLE IF NOT EXISTS produkty (
+                        idproduktu int(11) NOT NULL,
+                        Nazwaproduktu varchar(50) NOT NULL,
+                        Opisproduktu varchar(100) DEFAULT NULL,
+                        iddostawcy int(11) DEFAULT NULL,
+                        Ilość int(11) NOT NULL,
+                        Cena decimal(10,2) NOT NULL,
+                        Datadodania varchar(50) NOT NULL,
+                        Kodkreskowy varchar(20) DEFAULT NULL,
+                        PRIMARY KEY (idproduktu),
+                        KEY iddostawcy (iddostawcy)
+                      )`,
+                      `CREATE TABLE IF NOT EXISTS zamowienia (
+                        idzamowienia int(11) NOT NULL,
+                        idklienta int(11) DEFAULT NULL,
+                        idproduktu int(11) DEFAULT NULL,
+                        Datazamówienia varchar(50) NOT NULL,
+                        Datadostawy varchar(50) DEFAULT NULL,
+                        Statuszamówienia varchar(50) NOT NULL,
+                        PRIMARY KEY (idzamowienia),
+                        KEY idklienta (idklienta),
+                        KEY idproduktu (idproduktu)
+                      )`,
+                      `ALTER TABLE dostawcy MODIFY Iddostawcy int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6`,
+                      `ALTER TABLE klienci MODIFY idklienta int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23`,
+                      `ALTER TABLE produkty MODIFY idproduktu int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6`,
+                      `ALTER TABLE zamowienia MODIFY idzamowienia int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6`,
+                      `COMMIT`
+      ];
+      createTables.forEach((query) => { //tworzenie tabel
+        db.query(query, (createQueryError, results) => {
+          if (createQueryError) throw createQueryError;
+          console.log(`Query executed successfully: ${query}`);
+        });
+      });
+    });
+  });
+});
 app.get('/', (req, res) => {
   console.log('GET request received'); 
   const sql = 'SELECT * FROM klienci'; //pobieranie danych z bazy danych
@@ -67,13 +128,13 @@ app.get('/produkty', (req, res) => {
 });
 app.get('/zamowienia', (req, res) => {
   console.log('GET request received');
-  const sql = 'SELECT * FROM zamówienia';
+  const sql = 'SELECT * FROM zamowienia';
   db.query(sql, (err, result) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: err.message });
     }
-    console.log('GET request zamówienia successful');
+    console.log('GET request zamowienia successful');
     res.json(result);
   });
 });
@@ -94,13 +155,7 @@ app.post('/add', (req, res) => {
 app.post('/adddostawca', (req, res) => {
   const sql =
     "INSERT INTO dostawcy (Nazwafirmy, Adres, Kodpocztowy, Miasto, Numertelefonu, Adresemail) VALUES (?, ?, ?, ?, ?, ?)";
-  const values = [
-    req.body.Nazwafirmy,
-    req.body.Adres,
-    req.body.Kodpocztowy,
-    req.body.Miasto,
-    req.body.Numertelefonu,
-    req.body.Adresemail,
+  const values = [req.body.Nazwafirmy,req.body.Adres,req.body.Kodpocztowy,req.body.Miasto,req.body.Numertelefonu,req.body.Adresemail,
   ];
 
   db.query(sql, values, (err, data) => {
@@ -179,22 +234,40 @@ app.delete('/delete/dostawcy/:Iddostawcy', (req, res) => {
   );
 });
 
+app.delete('/delete/produkty/:idproduktu', (req, res) => {
+  console.log('DELETE request received at /delete/dostawcy/:idproduktu');
+  const Iddostawcy = req.params.idproduktu; //pobieranie id z bazy danych
+  db.query(
+    'DELETE FROM produkty WHERE idproduktu = ?',
+    [Iddostawcy],
+    (err, results) => {
+      if (err) {
+        console.error('Error executing MySQL query: ' + err.stack);
+        res.sendStatus(500);
+        return;
+      }
+      res.sendStatus(200);
+    }
+  );
+});
+app.delete('/delete/Zamowienia/:idzamowienia', (req, res) => {
+  console.log('DELETE request received at /delete/Zamowienia/:idzamowienia');
+  const idzamowienia = req.params.idzamowienia; 
+  db.query(
+    'DELETE FROM zamowienia WHERE idzamowienia = ?',
+    [idzamowienia],
+    (err, results) => {
+      if (err) {
+        console.error('Error executing MySQL query: ' + err.stack);
+        res.sendStatus(500);
+        return;
+      }
+      res.sendStatus(200);
+    }
+  );
+});
 
 //wyszukiwanie po nzawisku
-app.post("/search", (req, res) => {
-  const searchTerm = req.body.searchTerm;
-
-  const query = `SELECT * FROM klienci WHERE Nazwisko LIKE '%${searchTerm}%'`;
-
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-    } else {
-      res.json(results);
-    }
-  });
-});
 app.post("/search/", (req, res) => {
   const searchTerm = req.body.searchTerm;
 
@@ -213,6 +286,36 @@ app.post("/search/dostawcy", (req, res) => {
   const searchTerm = req.body.searchTerm;
 
   const query = `SELECT * FROM dostawcy WHERE Nazwafirmy LIKE ?`;
+  const searchValue = `%${searchTerm}%`;
+
+  db.query(query, [searchValue], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+      res.json(results);
+    }
+  });
+});
+app.post("/search/Produkty", (req, res) => {
+  const searchTerm = req.body.searchTerm;
+
+  const query = `SELECT * FROM produkty WHERE Nazwaproduktu LIKE ?`;
+  const searchValue = `%${searchTerm}%`;
+
+  db.query(query, [searchValue], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+      res.json(results);
+    }
+  });
+});
+app.post("/search/Zamowienia", (req, res) => {
+  const searchTerm = req.body.searchTerm;
+
+  const query = "SELECT * FROM zamowienia WHERE idzamowienia LIKE ?";
   const searchValue = `%${searchTerm}%`;
 
   db.query(query, [searchValue], (err, results) => {
