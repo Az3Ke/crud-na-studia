@@ -273,7 +273,7 @@ function Klienci() {
             
         <div className="p-2">
         
-          <Link to="/Addprodukt" className="btn btn-primary">
+          <Link to="/AddProdukt" className="btn btn-primary">
             Dodaj Produkt
           </Link>
         </div>

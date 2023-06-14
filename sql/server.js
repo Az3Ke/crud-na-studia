@@ -165,7 +165,24 @@ app.post('/adddostawca', (req, res) => {
     res.json({ message: 'Record created successfully' });
   });
 });
+app.post('/addProdukt', (req, res) => {
+  const sql =
+    "INSERT INTO produkty (Nazwa, Ilość, Cena, Datadodania, Kodkreskowy) VALUES (?, ?, ?, ?, ?)";
+  const values = [
+    req.body.Nazwa,
+    req.body.Ilość,
+    req.body.Cena,
+    req.body.Datadodania,
+    req.body.Kodkreskowy,
+  ];
 
+  db.query(sql, values, (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: 'Record created successfully' });
+  });
+});
 
 
 
