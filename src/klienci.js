@@ -320,12 +320,12 @@ function Klienci() {
                           <td>{item.Nazwaproduktu}</td>
                           <td>{item.Opisproduktu}</td>
                           <td>{item.iddostawcy}</td>
-                          <td>{item.Ilość}</td>
+                          <td>{item.Ilosc}</td>
                           <td>{item.Cena}zł</td>
                           <td>{item.Datadodania}</td>
                           <td>{item.Kodkreskowy}</td> 
                             <td>
-                           <Link to={`Edit/${item.idklienta}`} type="button" class="btn btn-warning">Edit</Link>
+                           <Link to={`EditProdukt/${item.idproduktu}`} type="button" class="btn btn-warning">Edit</Link>
                           </td>
                           <td>
                           <button type="button" class="btn btn-danger" onClick={e => DeleteProdukt(item.idproduktu)}>Usuń</button>

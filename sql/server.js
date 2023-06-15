@@ -27,57 +27,50 @@ db.connect((err) => {
       if (useError) throw useError;
       console.log('Using crud_app database'); 
 
-      const createTables = [ 
-                            `SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO"`,
-                      `CREATE TABLE IF NOT EXISTS dostawcy (
-                        Iddostawcy int(11) NOT NULL PRIMARY KEY,
-                        Nazwafirmy varchar(50) NOT NULL,
-                        Adres varchar(100) NOT NULL,
-                        Kodpocztowy varchar(10) NOT NULL,
-                        Miasto varchar(50) NOT NULL,
-                        Numertelefonu varchar(15) DEFAULT NULL,
-                        Adresemail varchar(50) DEFAULT NULL
-                      )`,
-                      `CREATE TABLE IF NOT EXISTS klienci (
-                        idklienta int(11) NOT NULL,
-                        Imię varchar(50) NOT NULL,
-                        Nazwisko varchar(50) NOT NULL,
-                        Adres varchar(100) NOT NULL,
-                        Kodpocztowy varchar(10) NOT NULL,
-                        Miasto varchar(50) NOT NULL,
-                        Numertelefonu varchar(15) DEFAULT NULL,
-                        Adresemail varchar(50) DEFAULT NULL,
-                        PRIMARY KEY (idklienta),
-                        UNIQUE KEY Adresemail (Adresemail)
-                      )`,
-                      `CREATE TABLE IF NOT EXISTS produkty (
-                        idproduktu int(11) NOT NULL,
-                        Nazwaproduktu varchar(50) NOT NULL,
-                        Opisproduktu varchar(100) DEFAULT NULL,
-                        iddostawcy int(11) DEFAULT NULL,
-                        Ilość int(11) NOT NULL,
-                        Cena decimal(10,2) NOT NULL,
-                        Datadodania varchar(50) NOT NULL,
-                        Kodkreskowy varchar(20) DEFAULT NULL,
-                        PRIMARY KEY (idproduktu),
-                        KEY iddostawcy (iddostawcy)
-                      )`,
-                      `CREATE TABLE IF NOT EXISTS zamowienia (
-                        idzamowienia int(11) NOT NULL,
-                        idklienta int(11) DEFAULT NULL,
-                        idproduktu int(11) DEFAULT NULL,
-                        Datazamówienia varchar(50) NOT NULL,
-                        Datadostawy varchar(50) DEFAULT NULL,
-                        Statuszamówienia varchar(50) NOT NULL,
-                        PRIMARY KEY (idzamowienia),
-                        KEY idklienta (idklienta),
-                        KEY idproduktu (idproduktu)
-                      )`,
-                      `ALTER TABLE dostawcy MODIFY Iddostawcy int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6`,
-                      `ALTER TABLE klienci MODIFY idklienta int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23`,
-                      `ALTER TABLE produkty MODIFY idproduktu int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6`,
-                      `ALTER TABLE zamowienia MODIFY idzamowienia int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6`,
-                      `COMMIT`
+      const createTables = [
+
+        `SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO"`,
+        `CREATE TABLE IF NOT EXISTS dostawcy (
+          Iddostawcy int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+          Nazwafirmy varchar(50) NOT NULL,
+          Adres varchar(100) NOT NULL,
+          Kodpocztowy varchar(10) NOT NULL,
+          Miasto varchar(50) NOT NULL,
+          Numertelefonu varchar(15) DEFAULT NULL,
+          Adresemail varchar(50) DEFAULT NULL
+        )`,
+        `CREATE TABLE IF NOT EXISTS klienci (
+          idklienta int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+          Imię varchar(50) NOT NULL,
+          Nazwisko varchar(50) NOT NULL,
+          Adres varchar(100) NOT NULL,
+          Kodpocztowy varchar(10) NOT NULL,
+          Miasto varchar(50) NOT NULL,
+          Numertelefonu varchar(15) DEFAULT NULL,
+          Adresemail varchar(50) DEFAULT NULL,
+          UNIQUE KEY Adresemail (Adresemail)
+        )`,
+        `CREATE TABLE IF NOT EXISTS produkty (
+          idproduktu int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+          Nazwaproduktu varchar(50) NOT NULL,
+          Opisproduktu varchar(100) DEFAULT NULL,
+          iddostawcy int(11) DEFAULT NULL,
+          Ilosc int(11) NOT NULL,
+          Cena decimal(10,2) NOT NULL,
+          Datadodania varchar(50) NOT NULL,
+          Kodkreskowy varchar(20) DEFAULT NULL,
+          KEY iddostawcy (iddostawcy)
+        )`,
+        `CREATE TABLE IF NOT EXISTS zamowienia (
+          idzamowienia int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+          idklienta int(11) DEFAULT NULL,
+          idproduktu int(11) DEFAULT NULL,
+          Datazamówienia varchar(50) NOT NULL,
+          Datadostawy varchar(50) DEFAULT NULL,
+          Statuszamówienia varchar(50) NOT NULL,
+          KEY idklienta (idklienta),
+          KEY idproduktu (idproduktu)
+        )`,
       ];
       createTables.forEach((query) => { //tworzenie tabel
         db.query(query, (createQueryError, results) => {
@@ -157,7 +150,6 @@ app.post('/adddostawca', (req, res) => {
     "INSERT INTO dostawcy (Nazwafirmy, Adres, Kodpocztowy, Miasto, Numertelefonu, Adresemail) VALUES (?, ?, ?, ?, ?, ?)";
   const values = [req.body.Nazwafirmy,req.body.Adres,req.body.Kodpocztowy,req.body.Miasto,req.body.Numertelefonu,req.body.Adresemail,
   ];
-
   db.query(sql, values, (err, data) => {
     if (err) {
       return res.status(500).json({ error: err.message });
@@ -165,24 +157,25 @@ app.post('/adddostawca', (req, res) => {
     res.json({ message: 'Record created successfully' });
   });
 });
+
 app.post('/addProdukt', (req, res) => {
   const sql =
-    "INSERT INTO produkty (Nazwa, Ilość, Cena, Datadodania, Kodkreskowy) VALUES (?, ?, ?, ?, ?)";
-  const values = [
-    req.body.Nazwa,
-    req.body.Ilość,
-    req.body.Cena,
-    req.body.Datadodania,
-    req.body.Kodkreskowy,
+    'INSERT INTO produkty (Nazwaproduktu, Opisproduktu, iddostawcy, Ilosc, Cena, Datadodania, Kodkreskowy) VALUES (?, ?, ?, ?, ?, ?, ?)';
+  const values = [req.body.Nazwaproduktu,req.body.Opisproduktu,req.body.iddostawcy,req.body.Ilosc,req.body.Cena,req.body.Datadodania,req.body.Kodkreskowy,
   ];
-
-  db.query(sql, values, (err, data) => {
+  db.query(sql, values, (err, result) => {
     if (err) {
-      return res.status(500).json({ error: err.message });
+      console.error('Error inserting product:', err);
+      res.status(500).json({ error: err.message });
+      return;
     }
+    
+    console.log('Product inserted successfully');
     res.json({ message: 'Record created successfully' });
   });
 });
+
+
 
 
 
@@ -207,6 +200,19 @@ app.put('/EditDostawca/:Iddostawcy', (req, res) => {
   const { Nazwafirmy, Adres, Kodpocztowy, Miasto, Numertelefonu, Adresemail } = req.body;
   const sql = 'UPDATE dostawcy SET Nazwafirmy = ?, Adres = ?, Kodpocztowy = ?, Miasto = ?, Numertelefonu = ?, Adresemail = ? WHERE Iddostawcy = ?';
   const values = [Nazwafirmy, Adres, Kodpocztowy, Miasto, Numertelefonu, Adresemail, Iddostawcy];
+  db.query(sql, values, (err, results) => {
+    if (err) {
+      console.error('Error executing MySQL query:', err);
+      return res.status(500).json({ error: err.message });
+    }
+    res.sendStatus(200);
+  });
+});
+app.put('/EditProdukt/:idproduktu', (req, res) => {
+  const idproduktu = req.params.idproduktu;
+  const { Nazwaproduktu, Opisproduktu, iddostawcy, Ilosc, Cena, Datadodania, Kodkreskowy } = req.body;
+  const sql = 'UPDATE produkty SET Nazwaproduktu = ?, Opisproduktu = ?, iddostawcy = ?, Ilosc = ?, Cena = ?, Datadodania = ?, Kodkreskowy = ? WHERE idproduktu = ?';
+  const values = [Nazwaproduktu, Opisproduktu, iddostawcy, Ilosc, Cena, Datadodania, Kodkreskowy, idproduktu];
   db.query(sql, values, (err, results) => {
     if (err) {
       console.error('Error executing MySQL query:', err);

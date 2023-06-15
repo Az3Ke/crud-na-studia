@@ -1,23 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function AddProdukt() {
   const [Nazwaproduktu, setNazwaproduktu] = useState('');
   const [Opisproduktu, setOpisproduktu] = useState('');
-  const [Ilość, setIlość] = useState('');
+  const [Ilosc, setIlosc] = useState('');
   const [Cena, setCena] = useState('');
   const [Datadodania, setDatadodania] = useState('');
   const [Kodkreskowy, setKodkreskowy] = useState('');
-
+  const [iddostawcy, setiddostawcy] = useState('');
+  const [dostawcy, setDostawcy] = useState([]);
   const navigate = useNavigate();
 
-  const submitForm = (event) => {
+  useEffect(() => {
+    axios
+      .get("http://localhost:8086/dostawcy")
+      .then((res) => setDostawcy(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
+  function submitForm(event) {
     event.preventDefault();
     axios
       .post('http://localhost:8086/addProdukt', {
-        Nazwa: Nazwaproduktu,
-        Ilość,
+        Nazwaproduktu,
+        Opisproduktu,
+        iddostawcy,
+        Ilosc,
         Cena,
         Datadodania,
         Kodkreskowy,
@@ -29,94 +39,99 @@ function AddProdukt() {
       .catch((err) => {
         console.error(err);
       });
-  };
+  }
 
   return (
     <div className="rounded h-70 mx-auto bg-dark p-2">
       <div className="w-70 bg-dark p-2 rounded mx-auto text-light">
         <form onSubmit={submitForm}>
-          <h1>Dodaj Produkt</h1>
+          <h1>Dodaj produkt</h1>
           <div className="mb-2">
-            <label htmlFor="NazwaProduktu">Nazwa Produktu</label>
+            <label htmlFor="nazwa">Nazwaproduktu</label>
             <input
               type="text"
               className="form-control"
-              id="NazwaProduktu"
-              placeholder="Nazwa Produktu"
+              id="nazwa"
+              placeholder="Nazwa"
               value={Nazwaproduktu}
-              onChange={(e) => {
-                setNazwaproduktu(e.target.value);
-              }}
+              onChange={(e) => setNazwaproduktu(e.target.value)}
               required
             />
           </div>
           <div className="mb-2">
-            <label htmlFor="OpisProduktu">Opis Produktu</label>
+            <label htmlFor="opisproduktu">Opis produktu</label>
             <input
               type="text"
               className="form-control"
-              id="OpisProduktu"
-              placeholder="Opis Produktu"
+              id="opisproduktu"
+              placeholder="Opis produktu"
               value={Opisproduktu}
-              onChange={(e) => {
-                setOpisproduktu(e.target.value);
-              }}
+              onChange={(e) => setOpisproduktu(e.target.value)}
               required
             />
           </div>
           <div className="mb-2">
-            <label htmlFor="Ilość">Ilość</label>
+            <label htmlFor="iddostawcy">Dostawca</label>
+            <select
+              className="form-control"
+              id="iddostawcy"
+              value={iddostawcy}
+              onChange={(e) => setiddostawcy(e.target.value)}
+              required
+            >
+              <option value="">Wybierz dostawcę</option>
+              {dostawcy.map((dostawca) => (
+                <option key={dostawca.Iddostawcy} value={dostawca.Iddostawcy}>
+                  {dostawca.Nazwafirmy}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-2">
+            <label htmlFor="ilosc">Ilość</label>
             <input
               type="text"
               className="form-control"
-              id="Ilość"
+              id="ilosc"
               placeholder="Ilość"
-              value={Ilość}
-              onChange={(e) => {
-                setIlość(e.target.value);
-              }}
+              value={Ilosc}
+              onChange={(e) => setIlosc(e.target.value)}
               required
             />
           </div>
           <div className="mb-2">
-            <label htmlFor="Cena">Cena</label>
+            <label htmlFor="cena">Cena</label>
             <input
               type="text"
               className="form-control"
-              id="Cena"
+              id="cena"
               placeholder="Cena"
               value={Cena}
-              onChange={(e) => {
-                setCena(e.target.value);
-              }}
+              onChange={(e) => setCena(e.target.value)}
               required
             />
           </div>
           <div className="mb-2">
-            <label htmlFor="Datadodania">Data dodania</label>
+            <label htmlFor="datadodania">Data dodania</label>
             <input
               type="date"
               className="form-control"
-              id="Datadodania"
+              id="datadodania"
               placeholder="Data dodania"
               value={Datadodania}
-              onChange={(e) => {
-                setDatadodania(e.target.value);
-              }}
+              onChange={(e) => setDatadodania(e.target.value)}
               required
             />
           </div>
           <div className="mb-2">
-            <label htmlFor="Kodkreskowy">Kod kreskowy</label>
+            <label htmlFor="kodkreskowy">Kod kreskowy</label>
             <input
-              type="number"
+              type="text"
               className="form-control"
-              id="Kodkreskowy"
+              id="kodkreskowy"
               placeholder="Kod kreskowy"
               value={Kodkreskowy}
-              onChange={(e) => {
-                setKodkreskowy(e.target.value);
-              }}
+              onChange={(e) => setKodkreskowy(e.target.value)}
               required
             />
           </div>
