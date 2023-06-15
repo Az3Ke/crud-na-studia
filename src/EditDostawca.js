@@ -35,6 +35,7 @@ function Adddostawca() {
 }
 
   return (
+    <div className="vh-100" style={{backgroundColor: "#36393e"  }}>
 <div className="rounded h-70 mx-auto bg-dark p-2">
 <div className='w-70 bg-dark p-2 rounded mx-auto text-light'>
   <form onSubmit={submitForm}>
@@ -75,7 +76,7 @@ function Adddostawca() {
   </form>
 </div>
 </div>
-
+</div>
   );
 }
 

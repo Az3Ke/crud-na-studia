@@ -36,8 +36,9 @@ function Add() {
   }
 
   return (
-<div className="rounded h-70 mx-auto bg-dark p-2">
-<div className='w-70 bg-dark p-2 rounded mx-auto text-light'>
+    <div className="vh-100" style={{backgroundColor: "#36393e"  }}>
+<div  className="rounded vh-10 mx-auto  bg-dark p-2" >
+<div className='w-70 bg-dark p-2 mh-50 rounded mx-auto text-light'>
   <form onSubmit={submitForm}>
     <h1>Dodaj klienta</h1>
     <div className="mb-2">
@@ -81,7 +82,7 @@ function Add() {
   </form>
 </div>
 </div>
-
+</div>
   );
 }
 

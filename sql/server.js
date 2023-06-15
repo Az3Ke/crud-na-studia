@@ -65,9 +65,9 @@ db.connect((err) => {
           idzamowienia int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
           idklienta int(11) DEFAULT NULL,
           idproduktu int(11) DEFAULT NULL,
-          Datazamówienia varchar(50) NOT NULL,
+          Datazamowienia varchar(50) NOT NULL,
           Datadostawy varchar(50) DEFAULT NULL,
-          Statuszamówienia varchar(50) NOT NULL,
+          Statuszamowienia varchar(50) NOT NULL,
           KEY idklienta (idklienta),
           KEY idproduktu (idproduktu)
         )`,
@@ -169,8 +169,22 @@ app.post('/addProdukt', (req, res) => {
       res.status(500).json({ error: err.message });
       return;
     }
-    
     console.log('Product inserted successfully');
+    res.json({ message: 'Record created successfully' });
+  });
+});
+app.post('/addZam', (req, res) => {
+  const sql =
+    'INSERT INTO zamowienia (idklienta, idproduktu, Datazamowienia, Datadostawy, Statuszamowienia) VALUES (?, ?, ?, ?, ?)';
+  const values = [req.body.idklienta,req.body.idproduktu,req.body.Datazamowienia,req.body.Datadostawy,req.body.Statuszamowienia,
+  ];
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting product:', err);
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    console.log('Zamówienia inserted successfully');
     res.json({ message: 'Record created successfully' });
   });
 });
@@ -213,6 +227,19 @@ app.put('/EditProdukt/:idproduktu', (req, res) => {
   const { Nazwaproduktu, Opisproduktu, iddostawcy, Ilosc, Cena, Datadodania, Kodkreskowy } = req.body;
   const sql = 'UPDATE produkty SET Nazwaproduktu = ?, Opisproduktu = ?, iddostawcy = ?, Ilosc = ?, Cena = ?, Datadodania = ?, Kodkreskowy = ? WHERE idproduktu = ?';
   const values = [Nazwaproduktu, Opisproduktu, iddostawcy, Ilosc, Cena, Datadodania, Kodkreskowy, idproduktu];
+  db.query(sql, values, (err, results) => {
+    if (err) {
+      console.error('Error executing MySQL query:', err);
+      return res.status(500).json({ error: err.message });
+    }
+    res.sendStatus(200);
+  });
+});
+app.put('/EditZam/:idzamowienia', (req, res) => {
+  const idzamowienia = req.params.idzamowienia;
+  const { idklienta, idproduktu, Datazamowienia, Datadostawy, Statuszamowienia } = req.body;
+  const sql = 'UPDATE zamowienia SET idklienta = ?, idproduktu = ?, datazamowienia = ?, datadostawy = ?, statuszamowienia = ? WHERE idzamowienia = ?';
+  const values = [idklienta, idproduktu, Datazamowienia, Datadostawy, Statuszamowienia, idzamowienia];
   db.query(sql, values, (err, results) => {
     if (err) {
       console.error('Error executing MySQL query:', err);

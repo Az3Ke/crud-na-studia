@@ -118,7 +118,8 @@ function Klienci() {
   };
 
   return (
-    <div className="rounded h-70 mx-auto bg-dark rounded  ">
+    <div className="vh-200 bg-dark">
+    <div className="rounded h-100 mx-auto bg-dark rounded  ">
       <h1 className="text-center text-white p-2">Klienci</h1>
       <nav className="navbar navbar-expand-lg navbar-dark d-flex justify-content-between">
         <div className="p-2">
@@ -340,7 +341,7 @@ function Klienci() {
             
         <div className="p-2">
         
-          <Link to="/Addprodukt" className="btn btn-primary">
+          <Link to="/AddZam" className="btn btn-primary">
             Dodaj Zamówienie
           </Link>
         </div>
@@ -384,11 +385,11 @@ function Klienci() {
                             <td>{item.idzamowienia}</td>
                             <td>{item.idklienta}</td>
                             <td>{item.idproduktu}</td>
-                            <td>{item.Datazamówienia}</td>
+                            <td>{item.Datazamowienia}</td>
                             <td>{item.Datadostawy}</td>
-                            <td>{item.Statuszamówienia}</td>
+                            <td>{item.Statuszamowienia}</td>
                             <td>
-                           <Link to={`Edit/${item.idklienta}`} type="button" class="btn btn-warning">Edit</Link>
+                           <Link to={`EditZam/${item.idzamowienia}`} type="button" class="btn btn-warning">Edit</Link>
                           </td>
                           <td>
                           <button type="button" class="btn btn-danger" onClick={e => DeleteZam(item.idzamowienia)}>Usuń</button>
@@ -398,6 +399,7 @@ function Klienci() {
             </tbody>
           </table>
     </div>
+  </div>
   );
 }
 
