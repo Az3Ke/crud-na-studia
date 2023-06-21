@@ -123,6 +123,7 @@ function EditZam() {
               {klienci.map((item) => (
                 <option key={item.idklienta} value={item.idklienta}>
                   {item.Nazwisko}
+                   
                 </option>
               ))}
             </select>
